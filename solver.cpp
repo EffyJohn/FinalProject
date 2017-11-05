@@ -145,6 +145,24 @@ public:
     }
 };
 
+class sudoku
+{
+private:
+    partition *rows[9];
+    partition *columns[9];
+    partition *boxes[9];
+    element *squares[9][9];
+public:
+    // Constructor. Requirements: An array that has the 81 numbers that represent a sudoku
+    sudoku(short array[81])
+    {
+        for (int i = 0; i < 81; i++)
+        {
+            squares[i%9][i/9] = new element(array[i]);
+        }
+    }
+};
+
 int main()
 {
     cout<<"Hello World\n";
