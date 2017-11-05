@@ -15,8 +15,8 @@ class element
 private:
     short number;           // Stores the value that is supposed to be in the square. If value is zero, this means that the valu hasn't been determined yet.
     int possibilities;      // Stores 9 flags in one integer using bitwise operators.
-                            // possibilities is 0b000000000 if number is already finalized, else the respective digit from the left is 1 if it is a possibility, and 0 if not
-                            // Example: if both 1,2 and 9 are likely candidates for number, then possibilities is 0b110000001
+                            // possibilities is 0b000000000 if number is already finalized, else the respective digit from the right is 1 if it is a possibility, and 0 if not
+                            // Example: if 1,2 and 9 are likely candidates for number, then possibilities is 0b100000011
 };
 
 int main()
