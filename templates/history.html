@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quote
+{% endblock %}
+
+{% block main %}
+        <table id = "index">
+            <tr>
+                <th>Transaction ID</th>
+                <th>Stock Symbol</th>
+                <th>Quantity</th>
+                <th>Price per Stock</th>
+                <th>Time Stamp</th>
+            </tr>
+            {% for transaction in List %}
+            <tr>
+                <td>{{transaction.transactionId}}</td>
+                <td>{{transaction.stockSymbol}}</td>
+                <td>{{transaction.quantity}}</td>
+                <td>{{transaction.pricePerStock}}</td>
+                <td>{{transaction.time}}</td>
+            </tr>
+            {% endfor%}
+        </table>
+{% endblock %}

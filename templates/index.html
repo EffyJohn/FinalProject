@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quote
+{% endblock %}
+
+{% block main %}
+        <table id = "index">
+            <tr>
+                <th>Stock Symbol</th>
+                <th>Quantity Owned</th>
+                <th>Price per Stock</th>
+                <th>Total Value</th>
+            </tr>
+            {% for stock in Stocks %}
+            <tr>
+                <td>{{stock.stockSymbol}}</td>
+                <td>{{stock.quantity}}</td>
+                {% for price in prices %}
+                    {% if price["symbol"] == stock.stockSymbol %}
+                    <td>{{"{0:.2f}".format(price["price"])}}</td>
+                    <td>{{"{0:.2f}".format(stock.quantity*price["price"])}}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor%}
+            <tr>
+                <th colspan = "3" id = "cash">Cash Balance:</th>
+                <td>{{"{0:.2f}".format(Stocks[0].cash)}}</td>
+            </tr>
+            <tr>
+                <th colspan = "3" id = "cash">Grand Total:</th>
+                <td>{{"{0:.2f}".format(Stocks[0].cash + Total)}}</td>
+            </tr>
+        </table>
+{% endblock %}
