@@ -113,12 +113,14 @@ public:
         // Sets existing up for check()
         existing = 0b000000000;
     }
-    // Checks to see what all numbers have already been set in this partition and updates all squares
+    // Checks to see what all numbers have already been set in this partition and updates all squares. Next, solves whatever it can.
+    // If no functions run, returns false to signify that no more operations are possible. Returns true otherwise.
     bool solve()
     {
-        bool returnVal = true;
+        // Is used to see if atleast one called function returns true
+        bool returnVal = false;
         
-        // Checks what numbers are in each square, and updates existing as required. Next, solves whatever it can.
+        // Checks what numbers are in each square, and updates existing as required.
         for (short i = 0; i < 9; i++)
         {
             if (array[i]->getNumber())
@@ -130,14 +132,16 @@ public:
         // Updates every square
         for (short i = 0; i < 9; i++)
         {
-            array[i]->update(existing);
+            returnVal |= array[i]->update(existing);
         }
         
-        // Solves
+        // Solves whatever possible
         for (short i = 0; i < 9; i++)
         {
-            array[i]->finalize();
+            returnVal |= array[i]->finalize();
         }
+        
+        return returnVal;
     }
 };
 
