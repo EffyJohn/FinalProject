@@ -6,6 +6,16 @@
 // For stream operations
 #include <iostream>
 
+/*
+*   Note to future self and anyone who is curious as to why I didn't do this:
+#define SUDOKU_SIZE 9;
+*
+*   Well I happened to realize this was pointless right after I typed that statement. First and foremost, the bitflags won't work
+*   Secondly, any number other than 9 for the size of a sudoku would mess this whole thing up pretty bad, and I don't expect to ever solve
+*   anything like a 6X6 or whatever.
+*/
+
+
 // For streams
 using namespace std;
 
@@ -61,13 +71,37 @@ public:
         }
     }
     
-    // Inputs a number that can be crossed off the list of possibilities. Updates possibilities to reflect this
+    // Inputs a set of bitflags that can be crossed off the list of possibilities. Updates possibilities to reflect this
     bool update(short input)
     {
-        possibilities &= (0b111111111)^(1<<(input-1));      // Sets relevant flag bit to 0 if it was a 1 earlier.
-                                                            // REMEMBER!! input is the number, so bitshift is one less
+        possibilities &= (0b111111111)^input;      // Sets relevant flag bit to 0 if it was a 1 earlier.
+                                                            // REMEMBER!! input is the number, so bitshift is one less than input
     }
 
+    // Returns the number inside the square
+    short getNumber()
+    {
+        return number;
+    }
+};
+
+class partition
+{
+private:
+    element* array[9];
+    int existing;       // Has bitflags set to 1 if the number already exists in this particular partition
+
+public:
+    bool check()
+    {
+        for (short i = 0; i < 9; i++)
+        {
+            if (array[i]->getNumber())
+            {
+                ;
+            }
+        }
+    }
 };
 
 int main()
