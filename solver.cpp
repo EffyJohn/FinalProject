@@ -74,8 +74,17 @@ public:
     // Inputs a set of bitflags that can be crossed off the list of possibilities. Updates possibilities to reflect this
     bool update(short input)
     {
-        possibilities &= (0b111111111)^input;      // Sets relevant flag bit to 0 if it was a 1 earlier.
-                                                            // REMEMBER!! input is the number, so bitshift is one less than input
+        int check = possibilities;
+        possibilities &= (0b111111111)^input;       // Sets relevant flag bit to 0 if it was a 1 earlier.
+                                                    // REMEMBER!! input is the number, so bitshift is one less than input
+        if (possibilities == check)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     // Returns the number inside the square
@@ -85,21 +94,49 @@ public:
     }
 };
 
+// Class that represents sudoku partitions like the big 3X3 square, or a row or column.
 class partition
 {
 private:
-    element* array[9];
+    element* array[9];  // Stores pointers to the 9 squares that are a part of this partition
     int existing;       // Has bitflags set to 1 if the number already exists in this particular partition
 
 public:
-    bool check()
+    // Constructor. Requirements: An array of pointers to this partition's squares
+    partition(element* squares[9])
     {
+        // Fills up array with the pointers to the squares
+        for (int i = 0; i < 9; i++)
+        {
+            array[i] = squares[i];
+        }
+        // Sets existing up for check()
+        existing = 0b000000000;
+    }
+    // Checks to see what all numbers have already been set in this partition and updates all squares
+    bool solve()
+    {
+        bool returnVal = true;
+        
+        // Checks what numbers are in each square, and updates existing as required. Next, solves whatever it can.
         for (short i = 0; i < 9; i++)
         {
             if (array[i]->getNumber())
             {
-                ;
+                existing |= (1<<(array[i]->getNumber() - 1));
             }
+        }
+        
+        // Updates every square
+        for (short i = 0; i < 9; i++)
+        {
+            array[i]->update(existing);
+        }
+        
+        // Solves
+        for (short i = 0; i < 9; i++)
+        {
+            array[i]->finalize();
         }
     }
 };
