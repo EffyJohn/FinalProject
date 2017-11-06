@@ -27,6 +27,7 @@ private:
     int possibilities;      // Stores 9 flags in one integer using bitwise operators.
                             // possibilities is 0b000000000 if number is already finalized, else the respective digit from the right is 1 if it is a possibility, and 0 if not
                             // Example: if 1,2 and 9 are likely candidates for number, then possibilities is 0b100000011
+
 public:
     // Constructor
     // Requirements: ANY number between 0 and 9, both included, but none other. Any other input can and most probably will cause the program to fail
@@ -113,6 +114,7 @@ public:
         // Sets existing up for check()
         existing = 0b000000000;
     }
+
     // Checks to see what all numbers have already been set in this partition and updates all squares. Next, solves whatever it can.
     // If no functions run, returns false to signify that no more operations are possible. Returns true otherwise.
     bool solve()
@@ -148,10 +150,12 @@ public:
 class sudoku
 {
 private:
-    partition *rows[9];
-    partition *columns[9];
-    partition *boxes[9];
-    element *squares[9][9];
+    partition *rows[9];     // Contains references to the squares that constitute the 9 rows of the sudoku
+    partition *columns[9];  // Contains references to the squares that constitute the 9 columns of the sudoku
+    partition *boxes[9];    // Contains references to the squares that constitute the 9 3X3 boxes of the sudoku
+    element *squares[9][9]; // Contains references to ALL the squares that constitute the sudoku,
+                            // as a two dimensional array that is in the shape of the real sudoku
+
 public:
     // Constructor. Requirements: An array that has the 81 numbers that represent a sudoku
     sudoku(short array[81])
