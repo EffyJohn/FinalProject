@@ -114,7 +114,21 @@ public:
         // Sets existing up for check()
         existing = 0b000000000;
     }
-
+    
+    /*
+    *   Realized right after I typed this that this was useless. The sudoku class is the one where the dynamic memory is allocated.
+    *   I think it's best if the deletions happen there as well. No point writing a destructor that will make the pointers null either.
+    *   Deleted memory is not a concern.
+    // Destructor to deallocate all dynamic memory
+    ~partition()
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            delete(array[i]);   
+        }
+    }
+    */
+    
     // Checks to see what all numbers have already been set in this partition and updates all squares. Next, solves whatever it can.
     // If no functions run, returns false to signify that no more operations are possible. Returns true otherwise.
     bool solve()
@@ -147,22 +161,95 @@ public:
     }
 };
 
+// Class that represents the actual sudoku. It is a composition class of 81 element objects, and 27 partition objects
 class sudoku
 {
 private:
-    partition *rows[9];     // Contains references to the squares that constitute the 9 rows of the sudoku
-    partition *columns[9];  // Contains references to the squares that constitute the 9 columns of the sudoku
-    partition *boxes[9];    // Contains references to the squares that constitute the 9 3X3 boxes of the sudoku
-    element *squares[9][9]; // Contains references to ALL the squares that constitute the sudoku,
+    partition* rows[9];     // Contains references to the squares that constitute the 9 rows of the sudoku
+    partition* columns[9];  // Contains references to the squares that constitute the 9 columns of the sudoku
+    partition* boxes[9];    // Contains references to the squares that constitute the 9 3X3 boxes of the sudoku
+    element* squares[9][9]; // Contains references to ALL the squares that constitute the sudoku,
                             // as a two dimensional array that is in the shape of the real sudoku
 
 public:
     // Constructor. Requirements: An array that has the 81 numbers that represent a sudoku
     sudoku(short array[81])
     {
+        // Creates all the square elements, to store each square of the sudoku
         for (int i = 0; i < 81; i++)
         {
             squares[i%9][i/9] = new element(array[i]);
+        }
+        
+        // Creates all the rows using the constructor
+        for (int i = 0; i < 9; i++)
+        {
+            element* temp[9];
+            
+            for (int j = 0; j < 9; j++)
+            {
+                temp[j] = squares[i][j];
+            }
+            
+            rows[i] = new partition(temp);
+        }
+        
+        // Creates all the columns using the constructor
+        for (int i = 0; i < 9; i++)
+        {
+            element* temp[9];
+            
+            for (int j = 0; j < 9; j++)
+            {
+                temp[j] = squares[j][i];
+            }
+            
+            columns[i] = new partition(temp);
+        }
+        
+        /*
+        * I'm a bit loose with how rows and columns are defined here. Technically, rows are horizontal, and columns are vertical.
+        * In truth, this doesn't matter at all for solving, I just need to represent both. The names are irrelevant.
+        */
+        
+        // Outer loop iterates through the columns of boxes
+        for (int i = 0; i < 3; i++)
+        {
+            // Inner loop iterates through the rows of boxes
+            for (int j = 0; j < 3; j++)
+            {
+                element* temp[9];
+                // i*3 and j*3 give box start coordinates
+                // Outer loop iterates through each column of the box
+                for (int k = 0; k < 3; k++)
+                {
+                    // Inner loop iterates through each row of the box
+                    for (int l = 0; l < 3; l++)
+                    {
+                        temp[3*k+l] = squares[i*3 + k][j*3 + l];
+                    }
+                }
+                
+                boxes[3*i + j] = new partition(temp);
+            }
+        }
+    }
+    
+    // Deletes ALL dynamic memory created to represent things in the sudoku.
+    ~sudoku()
+    {
+        // Deletes partitions first, to avoid any mishaps.
+        for (int i = 0; i < 9; i++)
+        {
+            delete(rows[i]);
+            delete(columns[i]);
+            delete(boxes[i]);
+        }
+        
+        // Deletes each individual element.
+        for (int i = 0; i < 81; i++)
+        {
+            delete(squares[i%9][i/9]);
         }
     }
 };
