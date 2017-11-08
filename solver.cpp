@@ -170,7 +170,7 @@ private:
     partition* boxes[9];    // Contains references to the squares that constitute the 9 3X3 boxes of the sudoku
     element* squares[9][9]; // Contains references to ALL the squares that constitute the sudoku,
                             // as a two dimensional array that is in the shape of the real sudoku
-
+    
 public:
     // Constructor. Requirements: An array that has the 81 numbers that represent a sudoku
     sudoku(short array[81])
@@ -269,6 +269,19 @@ public:
         
         return returnVal;
     }
+    
+    // Temporary measure for testing, but I might keep it for the final version.
+    short* solution()
+    {
+        short* returnVal = new short[81];
+        
+        for (int i = 0; i < 81; i++)
+        {
+            returnVal[i] = squares[i%9][i/9]->getNumber();
+        }
+        
+        return returnVal;
+    }
 };
 
 
@@ -276,16 +289,26 @@ public:
 // It will only be properly finished once I complete the classes entirely
 int main()
 {
-    short array[81];
-    
-    for (int i = 0; i < 81; i++)
-    {
-        array[i] = i%9;
-    }
+    short array[] = {2,0,0,3,0,0,0,0,0,8,0,4,0,6,2,0,0,3,0,1,3,8,0,0,2,0,0,0,0,0,0,2,0,3,9,0,5,0,7,0,0,0,6,2,1,0,3,2,0,0,6,0,0,0,0,2,0,0,0,9,1,4,0,6,0,1,2,5,0,8,0,9,0,0,0,0,0,1,0,0,2};
     
     sudoku s(array);
     
+    while(s.solve());
+    
+    short* answer = s.solution();
+    
+    for (int i = 0; i < 81; i++)
+    {
+        if (!(i%9))
+        {
+            cout << endl;
+        }
+        cout << answer[i];
+    }
+    
     cout<<"Hello World\n";
     cout<<((0b101)^(0b110))<<endl;
+    delete(answer);
+    
     return 0;
 }
