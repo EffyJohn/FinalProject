@@ -252,6 +252,23 @@ public:
             delete(squares[i%9][i/9]);
         }
     }
+    
+    // Solves the entire sudoku, by calling (partition object).solve() for every partition.
+    // Returns true if even one of these functions returns true. Else returns false to show that the sudoku has been solved.
+    // Look at the solve functions for the partition class to understand how this works.
+    bool solve()
+    {
+        bool returnVal = false;
+        
+        for (int i = 0; i < 9; i++)
+        {
+            returnVal |= rows[i]->solve();
+            returnVal |= columns[i]->solve();
+            returnVal |= boxes[i]->solve();
+        }
+        
+        return returnVal;
+    }
 };
 
 
