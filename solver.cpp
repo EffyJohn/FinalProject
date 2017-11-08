@@ -254,8 +254,20 @@ public:
     }
 };
 
+
+// I forgot to mention in the previous commits. main(), as of now, is simply for testing purposes
+// It will only be properly finished once I complete the classes entirely
 int main()
 {
+    short array[81];
+    
+    for (int i = 0; i < 81; i++)
+    {
+        array[i] = i%9;
+    }
+    
+    sudoku s(array);
+    
     cout<<"Hello World\n";
     cout<<((0b101)^(0b110))<<endl;
     return 0;
