@@ -19,6 +19,22 @@
 // For streams
 using namespace std;
 
+// Simply for testing purposes
+void print(short* answer)
+{
+    for (int i = 0; i < 81; i++)
+    {
+        if (!(i%9))
+        {
+            cout << endl;
+        }
+        cout << answer[i];
+    }
+    
+    cout << endl;
+}
+
+
 // Each individual sqaure in a sudoku is going to be modelled as an element object
 class element
 {
@@ -40,7 +56,7 @@ public:
         }
         else
         {
-            possibilities = 0b111111111;    // If not, set the sqaure open to the solver's solving algorithm
+            possibilities = 0b111111111;    // If not, set the square open to the solver's solving algorithm
         }
         
         number = input;     // Sets the actual number
@@ -65,11 +81,9 @@ public:
                 possibilities = 0b000000000;  // Sets the square to be permanent, to prevent future edits
                 return true;        // Returns true to show the succesful filling of this square.
             }
-            else
-            {
-                return false;       // Returns false to say that a finalized value was not set.
-            }
         }
+        
+        return false;
     }
     
     // Inputs a set of bitflags that can be crossed off the list of possibilities. Updates possibilities to reflect this
@@ -265,6 +279,9 @@ public:
             returnVal |= rows[i]->solve();
             returnVal |= columns[i]->solve();
             returnVal |= boxes[i]->solve();
+            
+            // ONLY FOR TESTING
+            print(this->solution());
         }
         
         return returnVal;
@@ -283,6 +300,7 @@ public:
         return returnVal;
     }
 };
+
 
 
 // I forgot to mention in the previous commits. main(), as of now, is simply for testing purposes
@@ -305,6 +323,7 @@ int main()
         }
         cout << answer[i];
     }
+    cout << endl;
     
     cout<<"Hello World\n";
     cout<<((0b101)^(0b110))<<endl;
