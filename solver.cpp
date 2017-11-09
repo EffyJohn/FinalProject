@@ -22,7 +22,7 @@ using namespace std;
 // Simply for testing purposes
 void print(short* answer)
 {
-    for (int i = 0; i < 81; i++)
+    for (short i = 0; i < 81; i++)
     {
         if (!(i%9))
         {
@@ -121,11 +121,11 @@ public:
     partition(element* squares[9])
     {
         // Fills up array with the pointers to the squares
-        for (int i = 0; i < 9; i++)
+        for (short i = 0; i < 9; i++)
         {
             array[i] = squares[i];
         }
-        // Sets existing up for check()
+        // Sets existing up for solve()
         existing = 0b000000000;
     }
     
@@ -190,17 +190,17 @@ public:
     sudoku(short array[81])
     {
         // Creates all the square elements, to store each square of the sudoku
-        for (int i = 0; i < 81; i++)
+        for (short i = 0; i < 81; i++)
         {
             squares[i%9][i/9] = new element(array[i]);
         }
         
         // Creates all the rows using the constructor
-        for (int i = 0; i < 9; i++)
+        for (short i = 0; i < 9; i++)
         {
             element* temp[9];
             
-            for (int j = 0; j < 9; j++)
+            for (short j = 0; j < 9; j++)
             {
                 temp[j] = squares[i][j];
             }
@@ -209,11 +209,11 @@ public:
         }
         
         // Creates all the columns using the constructor
-        for (int i = 0; i < 9; i++)
+        for (short i = 0; i < 9; i++)
         {
             element* temp[9];
             
-            for (int j = 0; j < 9; j++)
+            for (short j = 0; j < 9; j++)
             {
                 temp[j] = squares[j][i];
             }
@@ -227,18 +227,18 @@ public:
         */
         
         // Outer loop iterates through the columns of boxes
-        for (int i = 0; i < 3; i++)
+        for (short i = 0; i < 3; i++)
         {
             // Inner loop iterates through the rows of boxes
-            for (int j = 0; j < 3; j++)
+            for (short j = 0; j < 3; j++)
             {
                 element* temp[9];
                 // i*3 and j*3 give box start coordinates
                 // Outer loop iterates through each column of the box
-                for (int k = 0; k < 3; k++)
+                for (short k = 0; k < 3; k++)
                 {
                     // Inner loop iterates through each row of the box
-                    for (int l = 0; l < 3; l++)
+                    for (short l = 0; l < 3; l++)
                     {
                         temp[3*k+l] = squares[i*3 + k][j*3 + l];
                     }
@@ -253,7 +253,7 @@ public:
     ~sudoku()
     {
         // Deletes partitions first, to avoid any mishaps.
-        for (int i = 0; i < 9; i++)
+        for (short i = 0; i < 9; i++)
         {
             delete(rows[i]);
             delete(columns[i]);
@@ -261,7 +261,7 @@ public:
         }
         
         // Deletes each individual element.
-        for (int i = 0; i < 81; i++)
+        for (short i = 0; i < 81; i++)
         {
             delete(squares[i%9][i/9]);
         }
@@ -274,7 +274,7 @@ public:
     {
         bool returnVal = false;
         
-        for (int i = 0; i < 9; i++)
+        for (short i = 0; i < 9; i++)
         {
             returnVal |= rows[i]->solve();
             returnVal |= columns[i]->solve();
@@ -292,7 +292,7 @@ public:
     {
         short* returnVal = new short[81];
         
-        for (int i = 0; i < 81; i++)
+        for (short i = 0; i < 81; i++)
         {
             returnVal[i] = squares[i%9][i/9]->getNumber();
         }
@@ -315,7 +315,7 @@ int main()
     
     short* answer = s.solution();
     
-    for (int i = 0; i < 81; i++)
+    for (short i = 0; i < 81; i++)
     {
         if (!(i%9))
         {
