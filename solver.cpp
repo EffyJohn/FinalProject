@@ -83,6 +83,13 @@ public:
             }
         }
         
+        // For testing only
+        if (possibilities == 1 || possibilities == 2 || possibilities == 4 || possibilities == 8 || possibilities == 16 || possibilities == 32 || possibilities == 64 || possibilities == 128 || possibilities == 256)
+        {
+            cout << possibilities << endl;
+        }
+        
+        
         return false;
     }
     
@@ -307,7 +314,8 @@ public:
 // It will only be properly finished once I complete the classes entirely
 int main()
 {
-    short array[] = {2,0,0,3,0,0,0,0,0,8,0,4,0,6,2,0,0,3,0,1,3,8,0,0,2,0,0,0,0,0,0,2,0,3,9,0,5,0,7,0,0,0,6,2,1,0,3,2,0,0,6,0,0,0,0,2,0,0,0,9,1,4,0,6,0,1,2,5,0,8,0,9,0,0,0,0,0,1,0,0,2};
+    //short array[] = {2,0,0,3,0,0,0,0,0,8,0,4,0,6,2,0,0,3,0,1,3,8,0,0,2,0,0,0,0,0,0,2,0,3,9,0,5,0,7,0,0,0,6,2,1,0,3,2,0,0,6,0,0,0,0,2,0,0,0,9,1,4,0,6,0,1,2,5,0,8,0,9,0,0,0,0,0,1,0,0,2};
+    short array[] = {2,7,6,3,1,4,9,5,8,8,0,4,0,6,2,0,0,3,0,1,3,8,0,0,2,0,0,0,0,0,0,2,0,3,9,0,5,0,7,0,0,0,6,2,1,0,3,2,0,0,6,0,0,0,0,2,0,0,0,9,1,4,0,6,0,1,2,5,0,8,0,9,0,0,0,0,0,1,0,0,2};
     
     sudoku s(array);
     
