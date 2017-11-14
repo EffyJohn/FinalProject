@@ -19,6 +19,7 @@
 // For streams
 using namespace std;
 
+
 // Simply for testing purposes
 void print(short* answer)
 {
@@ -154,6 +155,33 @@ public:
         column = data;
     }
 };
+
+// Used in the second step of solving, for higher order puzzles. Simply stores the pointer
+// to one element, and has a flag variable named value to store a boolean value that is needed
+class flag
+{
+private:
+    element* data;      // Stores the relevant square's pointer
+    bool  value;        // Stores the flag value
+
+public:
+    flag()
+    {
+        data = NULL;
+        value = false;
+    }
+    
+    void setData(element* input)
+    {
+        data = input;
+    }
+    
+    void setFlag(bool input)
+    {
+        value = input;
+    }
+};
+
 
 // Class that represents sudoku partitions like the big 3X3 square, or a row or column.
 class partition
@@ -346,7 +374,11 @@ public:
             print(this->solution());
         }
         
-        
+        // Runs a higher order check on boxes
+        for (short i = 0; i < 9; i++)   // Iterates through each box
+        {
+            
+        }
         
         return returnVal;
     }
