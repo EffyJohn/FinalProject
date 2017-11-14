@@ -43,6 +43,9 @@ private:
     int possibilities;      // Stores 9 flags in one integer using bitwise operators.
                             // possibilities is 0b000000000 if number is already finalized, else the respective digit from the right is 1 if it is a possibility, and 0 if not
                             // Example: if 1,2 and 9 are likely candidates for number, then possibilities is 0b100000011
+    short row;              // Stores the row number of this element, a number from 0-8 
+    short column;           // Stores the column number of this element, a number from 0-8
+    short box;              // Stores the box number of this element, a number from 0-8
 
 public:
     // Constructor
@@ -114,6 +117,42 @@ public:
     {
         return number;
     }
+    
+    // See the box variable to understand
+    short getBox()
+    {
+        return box;
+    }
+    
+    // See the row variable to understand
+    short getRow()
+    {
+        return row;
+    }
+    
+    // See the column variable to understand
+    short getColumn()
+    {
+        return column;
+    }
+    
+    // See the box variable to understand
+    short setBox(short data)
+    {
+        box = data;
+    }
+    
+    // See the row variable to understand
+    short setRow(short data)
+    {
+        row = data;
+    }
+    
+    // See the column variable to understand
+    short setColumn(short data)
+    {
+        column = data;
+    }
 };
 
 // Class that represents sudoku partitions like the big 3X3 square, or a row or column.
@@ -122,15 +161,31 @@ class partition
 private:
     element* array[9];  // Stores pointers to the 9 squares that are a part of this partition
     int existing;       // Has bitflags set to 1 if the number already exists in this particular partition
+    short index;        // Stores a number to denote which row/column/box this is
 
 public:
-    // Constructor. Requirements: An array of pointers to this partition's squares
-    partition(element* squares[9])
+    // Constructor. Requirements: An array of pointers to this partition's squares, an index to fill this->index, and a char that has c (column), r (row), or b (box)
+    partition(element* squares[9], short partitionIndex, char indicator)
     {
+        index = partitionIndex;
         // Fills up array with the pointers to the squares
         for (short i = 0; i < 9; i++)
         {
             array[i] = squares[i];
+            
+            // Sets required indices for each square, to ensure that leg 2 of program works.
+            if (indicator == 'c')
+            {
+                array[i]->setColumn(index);
+            }
+            else if (indicator == 'r')
+            {
+                array[i]->setRow(index);
+            }
+            else if (indicator == 'b')
+            {
+                array[i]->setBox(index);
+            }
         }
         // Sets existing up for solve()
         existing = 0b000000000;
@@ -212,7 +267,7 @@ public:
                 temp[j] = squares[i][j];
             }
             
-            rows[i] = new partition(temp);
+            rows[i] = new partition(temp,i,'r');
         }
         
         // Creates all the columns using the constructor
@@ -225,7 +280,7 @@ public:
                 temp[j] = squares[j][i];
             }
             
-            columns[i] = new partition(temp);
+            columns[i] = new partition(temp,i,'c');
         }
         
         /*
@@ -251,7 +306,7 @@ public:
                     }
                 }
                 
-                boxes[3*i + j] = new partition(temp);
+                boxes[3*i + j] = new partition(temp,3*i + j,'b');
             }
         }
     }
@@ -291,6 +346,8 @@ public:
             print(this->solution());
         }
         
+        
+        
         return returnVal;
     }
     
@@ -318,10 +375,10 @@ int main()
     //short array[] = {2,0,0,3,0,0,0,0,0,8,0,4,0,6,2,0,0,3,0,1,3,8,0,0,2,0,0,0,0,0,0,2,0,3,9,0,5,0,7,0,0,0,6,2,1,0,3,2,0,0,6,0,0,0,0,2,0,0,0,9,1,4,0,6,0,1,2,5,0,8,0,9,0,0,0,0,0,1,0,0,2};
     
     // Easy:
-    //short array[] = {0,0,0,2,6,0,7,0,1,6,8,0,0,7,0,0,9,0,1,9,0,0,0,4,5,0,0,8,2,0,1,0,0,0,4,0,0,0,4,6,0,2,9,0,0,0,5,0,0,0,3,0,2,8,0,0,9,3,0,0,0,7,4,0,4,0,0,5,0,0,3,6,7,0,3,0,1,8,0,0,0};
+    short array[] = {0,0,0,2,6,0,7,0,1,6,8,0,0,7,0,0,9,0,1,9,0,0,0,4,5,0,0,8,2,0,1,0,0,0,4,0,0,0,4,6,0,2,9,0,0,0,5,0,0,0,3,0,2,8,0,0,9,3,0,0,0,7,4,0,4,0,0,5,0,0,3,6,7,0,3,0,1,8,0,0,0};
     
     // Intermediate:
-    short array[] = {0,2,0,6,0,8,0,0,0,5,8,0,0,0,9,7,0,0,0,0,0,0,4,0,0,0,0,3,7,0,0,0,0,5,0,0,6,0,0,0,0,0,0,0,4,0,0,8,0,0,0,0,1,3,0,0,0,0,2,0,0,0,0,0,0,9,8,0,0,0,3,6,0,0,0,3,0,6,0,9,0};
+    //short array[] = {0,2,0,6,0,8,0,0,0,5,8,0,0,0,9,7,0,0,0,0,0,0,4,0,0,0,0,3,7,0,0,0,0,5,0,0,6,0,0,0,0,0,0,0,4,0,0,8,0,0,0,0,1,3,0,0,0,0,2,0,0,0,0,0,0,9,8,0,0,0,3,6,0,0,0,3,0,6,0,9,0};
     
     sudoku s(array);
     
