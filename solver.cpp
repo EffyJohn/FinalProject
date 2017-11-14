@@ -176,9 +176,19 @@ public:
         data = input;
     }
     
+    element* getData()
+    {
+        return data;
+    }
+    
     void setFlag(bool input)
     {
         value = input;
+    }
+    
+    bool getFlag()
+    {
+        return value;
     }
 };
 
@@ -262,6 +272,11 @@ public:
         }
         
         return returnVal;
+    }
+    
+    element** returnArray()
+    {
+        return array;
     }
 };
 
@@ -377,7 +392,13 @@ public:
         // Runs a higher order check on boxes
         for (short i = 0; i < 9; i++)   // Iterates through each box
         {
+            flag temp[9];
+            for (short j = 0; j < 9; j++, temp[i].setData((boxes[i]->returnArray())[j]));   // Initializes the flag objects
             
+            for (short j = 0; j < 9; j++)   // Checks for a possible elimination for each number from 1-9
+            {
+                
+            }
         }
         
         return returnVal;
