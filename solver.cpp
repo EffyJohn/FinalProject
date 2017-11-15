@@ -97,6 +97,12 @@ public:
         return false;
     }
     
+    // Inputs a number from 1-9, returns true if it is a possibility, else false.
+    bool isPossible(short input)
+    {
+        return (!(possibilities & (1<<(input - 1)) == 0));
+    }
+    
     // Inputs a set of bitflags that can be crossed off the list of possibilities. Updates possibilities to reflect this
     bool update(short input)
     {
@@ -397,7 +403,47 @@ public:
             
             for (short j = 0; j < 9; j++)   // Checks for a possible elimination for each number from 1-9
             {
+                for (short k = 0; k < 9; k++)   // Checks each element
+                {
+                        temp[k].setFlag(temp[k].getData()->isPossible(j+1));    // Checks if the current number is a possibility, if yes, sets flag to true.
+                }
                 
+                short rowNum = -1;       // Used to store row number that has an elimination
+                short columnNum = -1;    // Used to store column number that has an elimination
+                
+                for (short k = 0; k < 9; k++)   // Goes through each element
+                {
+                    if (temp[k].getFlag())  // Checks for the current number
+                    {
+                        if (temp[k].getData()->getRow() != rowNum)
+                        {
+                            if (rowNum == -1)
+                            {
+                                rowNum = temp[k].getData()->getRow();
+                            }
+                            else
+                            {
+                                rowNum = -2;
+                            }
+                        }
+                        if (temp[k].getData()->getColumn() != columnNum)
+                        {
+                            if (columnNum == -1)
+                            {
+                               columnNum = temp[k].getData()->getColumn();
+                            }
+                            else
+                            {
+                                columnNum = -2;
+                            }
+                        }
+                    }
+                }
+                
+                if (rowNum >= 0)
+                {
+                    ;// TODO Do the elimination here.
+                }
             }
         }
         
