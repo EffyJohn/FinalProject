@@ -399,7 +399,10 @@ public:
         for (short i = 0; i < 9; i++)   // Iterates through each box
         {
             flag temp[9];
-            for (short j = 0; j < 9; j++, temp[i].setData((boxes[i]->returnArray())[j]));   // Initializes the flag objects
+            for (short j = 0; j < 9; j++)   // Initializes the flag objects
+            {
+                 temp[j].setData((boxes[i]->returnArray())[j]);
+            }
             
             for (short j = 0; j < 9; j++)   // Checks for a possible elimination for each number from 1-9
             {
