@@ -445,7 +445,7 @@ public:
                 
                 if (rowNum >= 0)
                 {
-                    ;// TODO Do the elimination here.
+                    element* rowElements[] = rows[rowNum]->returnArray();       // INCOMPLETE! TODO!!!
                 }
             }
         }
