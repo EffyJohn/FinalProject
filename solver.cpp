@@ -100,7 +100,7 @@ public:
     // Inputs a number from 1-9, returns true if it is a possibility, else false.
     bool isPossible(short input)
     {
-        return (!(possibilities & (1<<(input - 1)) == 0));
+        return (!((possibilities & (1<<(input - 1))) == 0));
     }
     
     // Inputs a set of bitflags that can be crossed off the list of possibilities. Updates possibilities to reflect this
@@ -395,6 +395,11 @@ public:
             print(this->solution());
         }
         
+        if (returnVal)
+        {
+            return returnVal;
+        }
+        
         // Runs a higher order check on boxes
         for (short i = 0; i < 9; i++)   // Iterates through each box
         {
@@ -443,10 +448,53 @@ public:
                     }
                 }
                 
+                
                 if (rowNum >= 0)
                 {
-                    element* rowElements[] = rows[rowNum]->returnArray();       // INCOMPLETE! TODO!!!
+                    element* rowElements[9];
+                                        
+                    // Gets all the relevant row elements
+                    for (short z = 0; z < 9; z++)
+                    {
+                        rowElements[z] = (rows[rowNum]->returnArray())[z];
+                    }
+                    
+                    for (short index1 = 0; index1 < 9; index1++)
+                    {
+                        for (short index2 = 0; temp[index1].getFlag() && (index2 < 9); index2++)
+                        {
+                            if ((temp[index1].getData() != rowElements[index2]))
+                            {
+                                returnVal |= rowElements[index2]->update(1<<j);
+                            }
+                        }
+                    }
+                    
                 }
+                
+                if (columnNum >= 0)
+                {
+                    element* columnElements[9];
+                                        
+                    // Gets all the relevant column elements
+                    for (short z = 0; z < 9; z++)
+                    {
+                        columnElements[z] = (columns[columnNum]->returnArray())[z];
+                    }
+                    
+                    for (short index1 = 0; index1 < 9; index1++)
+                    {
+                        for (short index2 = 0; temp[index1].getFlag() && (index2 < 9); index2++)
+                        {
+                            if ((temp[index1].getData() != columnElements[index2]))
+                            {
+                                returnVal |= columnElements[index2]->update(1<<j);
+                            }
+                        }
+                    }
+                    
+                }
+                
             }
         }
         
@@ -477,10 +525,10 @@ int main()
     //short array[] = {2,0,0,3,0,0,0,0,0,8,0,4,0,6,2,0,0,3,0,1,3,8,0,0,2,0,0,0,0,0,0,2,0,3,9,0,5,0,7,0,0,0,6,2,1,0,3,2,0,0,6,0,0,0,0,2,0,0,0,9,1,4,0,6,0,1,2,5,0,8,0,9,0,0,0,0,0,1,0,0,2};
     
     // Easy:
-    short array[] = {0,0,0,2,6,0,7,0,1,6,8,0,0,7,0,0,9,0,1,9,0,0,0,4,5,0,0,8,2,0,1,0,0,0,4,0,0,0,4,6,0,2,9,0,0,0,5,0,0,0,3,0,2,8,0,0,9,3,0,0,0,7,4,0,4,0,0,5,0,0,3,6,7,0,3,0,1,8,0,0,0};
+    //short array[] = {0,0,0,2,6,0,7,0,1,6,8,0,0,7,0,0,9,0,1,9,0,0,0,4,5,0,0,8,2,0,1,0,0,0,4,0,0,0,4,6,0,2,9,0,0,0,5,0,0,0,3,0,2,8,0,0,9,3,0,0,0,7,4,0,4,0,0,5,0,0,3,6,7,0,3,0,1,8,0,0,0};
     
     // Intermediate:
-    //short array[] = {0,2,0,6,0,8,0,0,0,5,8,0,0,0,9,7,0,0,0,0,0,0,4,0,0,0,0,3,7,0,0,0,0,5,0,0,6,0,0,0,0,0,0,0,4,0,0,8,0,0,0,0,1,3,0,0,0,0,2,0,0,0,0,0,0,9,8,0,0,0,3,6,0,0,0,3,0,6,0,9,0};
+    short array[] = {0,2,0,6,0,8,0,0,0,5,8,0,0,0,9,7,0,0,0,0,0,0,4,0,0,0,0,3,7,0,0,0,0,5,0,0,6,0,0,0,0,0,0,0,4,0,0,8,0,0,0,0,1,3,0,0,0,0,2,0,0,0,0,0,0,9,8,0,0,0,3,6,0,0,0,3,0,6,0,9,0};
     
     sudoku s(array);
     
