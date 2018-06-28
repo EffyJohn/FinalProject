@@ -35,7 +35,7 @@ Session(app)
 # configure CS50 Library to use SQLite database
 db = SQL("sqlite:///TicTacToe.db")
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
         # query database for username
@@ -50,7 +50,7 @@ def index():
         return render_template("index.html", Stocks = stocks, prices = quotes, Total = total)
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/solution", methods=["GET", "POST"])
 def login():
     """Log user in."""
 
@@ -84,139 +84,3 @@ def login():
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
-
-@app.route("/logout")
-def logout():
-    """Log user out."""
-
-    # forget any user_id
-    session.clear()
-
-    # redirect user to login form
-    return redirect(url_for("login"))
-
-@app.route("/quote", methods=["GET", "POST"])
-@login_required
-def quote():
-    """Get stock quote."""
-
-    # if user reached route via POST (as by submitting a form via POST)
-    if request.method == "POST":
-
-        # ensure symbol was submitted
-        if not request.form.get("symbol"):
-            return apology("Must provide Stock Symbol")
-
-        quote = lookup(request.form.get("symbol"))
-
-        if not quote:
-            return apology("Invalid Stock Symbol")
-
-        # redirect user to display page
-        return render_template("display.html", name = quote["name"], price = quote["price"], symbol = quote["symbol"])
-
-    # else if user reached route via GET (as by clicking a link or via redirect)
-    else:
-        return render_template("quote.html")
-
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    """Register user."""
-
-    # forget any user_id
-    session.clear()
-
-    # if user reached route via POST (as by submitting a form via POST)
-    if request.method == "POST":
-
-        # ensure username was submitted
-        if not request.form.get("username"):
-            return apology("Must provide username")
-
-        # ensure password was submitted
-        elif not request.form.get("password"):
-            return apology("Must provide password")
-
-        elif not request.form.get("passwordConf"):
-            return apology("Please confirm password")
-
-        elif request.form.get("password") != request.form.get("passwordConf"):
-            return apology("Password doesn't match with the Confirmation")
-
-        hashedPassword = pwd_context.hash(request.form.get("password"))
-
-        if not db.execute("INSERT INTO users (username,hash) VALUES(:username,:hash)", username = request.form.get("username"), hash = hashedPassword):
-            return apology("Username already taken!")
-
-        # query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
-
-        # ensure username exists and password is correct
-        if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
-            return apology("invalid username and/or password")
-
-        # remember which user has logged in
-        session["user_id"] = rows[0]["id"]
-
-        # redirect user to home page
-        return redirect(url_for("index"))
-
-    # else if user reached route via GET (as by clicking a link or via redirect)
-    else:
-        return render_template("register.html")
-
-@app.route("/sell", methods=["GET", "POST"])
-@login_required
-def sell():
-    """Sell shares of stock."""
-    # if user reached route via POST (as by submitting a form via POST)
-    if request.method == "POST":
-
-        # ensure symbol was submitted
-        if not request.form.get("symbol"):
-            return apology("Must provide Stock Symbol")
-        if not request.form.get("quantity"):
-            return apology("Invalid stock quantity")
-
-        try:
-            value = int(request.form.get("quantity"))
-        except ValueError:
-            return apology("Invalid stock quantity")
-
-        if not int(request.form.get("quantity")) > 0:
-            return apology("Invalid stock quantity")
-
-        quote = lookup(request.form.get("symbol"))
-
-        if not quote:
-            return apology("Invalid Stock Symbol")
-
-        cost = -1 * quote["price"] * int(request.form.get("quantity"))
-
-        data = db.execute("SELECT * FROM stocks WHERE userId = :userid AND stockSymbol=:symbol", userid=session["user_id"], symbol=request.form.get("symbol"))
-
-        if int(data[0]["quantity"]) < int(request.form.get("quantity")):
-            return apology("Insufficient Stocks!")
-
-        if not db.execute("INSERT INTO transactions (userId,stockSymbol,quantity,pricePerStock) VALUES(:userId,:stockSymbol,:quantity,:pricePerStock)",userId=session["user_id"],stockSymbol=quote["symbol"],quantity=-1*int(request.form.get("quantity")),pricePerStock=quote["price"]):
-            return apology("Transaction Failure")
-
-        transactions = db.execute("SELECT * from transactions")
-
-        length = len(transactions)
-
-        ID = transactions[length - 1]["transactionId"]
-
-        if not db.execute("UPDATE users SET cash = cash - :Cost where id = :userId", Cost = cost, userId = session["user_id"]):
-            if not db.execute("DELETE * from transactions WHERE transactionId = :id", id = ID):
-                return apology("FATAL TRANSACTION ERROR! CONTACT SYSTEM ADMIN. FAILED TRANSACTION ID: {}".format(ID))
-
-        if not db.execute("UPDATE stocks SET quantity = quantity - :bought where userId = :userId AND stockSymbol = :symbol", bought = request.form.get("quantity"), userId = session["user_id"], symbol = request.form.get("symbol")):
-            return apology("FATAL TRANSACTION ERROR! CONTACT SYSTEM ADMIN. FAILED TRANSACTION ID: {}".format(ID))
-
-        # redirect user to display page
-        return redirect(url_for("index"))
-
-    # else if user reached route via GET (as by clicking a link or via redirect)
-    else:
-        return render_template("sell.html")
